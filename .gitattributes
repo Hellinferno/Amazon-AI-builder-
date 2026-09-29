@@ -1,0 +1,2 @@
+# Fixture bytes feed source-file hashes; keep them identical on every platform.
+data/synthetic/** text eol=lf

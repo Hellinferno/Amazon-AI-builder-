@@ -1,0 +1,8 @@
+{
+  "business_id": "demo-business",
+  "dataset_version": "demo-v1",
+  "currency": "INR",
+  "timezone": "Asia/Kolkata",
+  "as_of_date": "2026-10-05",
+  "opening_cash": "50000.00"
+}

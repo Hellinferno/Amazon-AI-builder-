@@ -1,0 +1,43 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+.aws/
+*.pem
+*.key
+credentials*
+
+# Local databases and real uploads (synthetic fixtures in data/synthetic/ stay tracked)
+*.sqlite
+*.sqlite3
+*.db
+data/local/
+data/uploads/
+uploads/
+
+# Logs and editor/tool state
+*.log
+.vscode/
+.idea/
+.freebuff/
+
+# Original extracted documentation pack; its contents now live in the project root
+cashflow-assistant-docs/

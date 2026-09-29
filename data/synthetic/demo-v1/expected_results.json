@@ -1,0 +1,31 @@
+{
+  "source": "docs/ACCOUNTING_RULES.md, Golden synthetic fixture",
+  "horizon_end": "2026-10-09",
+  "baseline": {
+    "daily_closing": {
+      "2026-10-05": "50000.00",
+      "2026-10-06": "40000.00",
+      "2026-10-07": "80000.00",
+      "2026-10-08": "80000.00",
+      "2026-10-09": "25000.00"
+    },
+    "closing_cash": "25000.00",
+    "first_negative_date": null
+  },
+  "scenario_inv_001_delayed_14_days": {
+    "invoice_id": "INV-001",
+    "delay_days": 14,
+    "shifted_date": "2026-10-21",
+    "daily_closing": {
+      "2026-10-05": "50000.00",
+      "2026-10-06": "40000.00",
+      "2026-10-07": "40000.00",
+      "2026-10-08": "40000.00",
+      "2026-10-09": "-15000.00"
+    },
+    "closing_cash": "-15000.00",
+    "difference_from_baseline": "-40000.00",
+    "first_negative_date": "2026-10-09",
+    "shortfall_below_zero": "15000.00"
+  }
+}

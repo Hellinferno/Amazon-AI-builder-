@@ -1,0 +1,3 @@
+obligation_id,payee_name,category,total_amount,settled_before_as_of,due_date,expected_payment_date,status,currency
+BILL-001,Office Landlord,rent,10000.00,0.00,2026-10-06,2026-10-06,open,INR
+PAY-001,Staff Payroll,payroll,70000.00,0.00,2026-10-09,2026-10-09,open,INR

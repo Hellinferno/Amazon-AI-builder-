@@ -1,0 +1,8 @@
+# Versions that passed the test run on 29 Sep 2026 (Python 3.12.10, Windows 11).
+# The engine itself has no runtime dependencies.
+colorama==0.4.6
+iniconfig==2.3.0
+packaging==26.3
+pluggy==1.6.0
+Pygments==2.21.0
+pytest==9.1.1
