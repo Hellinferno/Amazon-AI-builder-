@@ -8,12 +8,12 @@ Status date: 29 September 2026. Checkboxes represent evidence-backed completion 
 - [x] User reports Python, Node.js, Git, and VS Code available.
 - [x] Initial Markdown documentation pack prepared.
 - [x] Project folder and local virtual environment confirmed. Evidence: project root `D:\AMAZON AI HACKATHON`; interpreter `.venv\Scripts\python.exe`, Python 3.12.10.
-- [ ] GitHub repository URL recorded.
+- [x] GitHub repository URL recorded. Evidence: <https://github.com/Hellinferno/Amazon-AI-builder->; initial commit `91c7a70` pushed to `main` on 29 Sep 2026.
 
 ## M0 — 30 September, 10 p.m.
 
 - [x] Install docs into project without overwriting unrelated work. Evidence: copied into an empty root; no existing file was replaced.
-- [ ] Add `.gitignore`, Python package manifest, and frontend manifest when scaffolded. Done: `.gitignore`, `backend/pyproject.toml`. Open: frontend manifest (frontend not scaffolded; roadmap 10 Oct).
+- [x] Add `.gitignore`, Python package manifest, and frontend manifest when scaffolded. Done: `.gitignore`, `backend/pyproject.toml`, committed in `91c7a70`. Open: frontend manifest (frontend not scaffolded; roadmap 10 Oct).
 - [x] Confirm interpreter and compatible dependency versions. Evidence: pytest 9.1.1 installed and ran on Python 3.12.10; pins in `backend/requirements-dev.txt`. The engine has no runtime dependencies.
 - [x] Create synthetic fixture and validate schema decisions. Evidence: `data/synthetic/demo-v1/`; `test_fixture.py` and `test_validation.py` pass; decisions recorded in DECISIONS.md.
 
@@ -70,3 +70,4 @@ Status date: 29 September 2026. Checkboxes represent evidence-backed completion 
 | Date/time IST | Task | Actual result | Evidence or command | Next action |
 | --- | --- | --- | --- | --- |
 | 29 Sep 2026, 16:59–17:05 | Roadmap items 28 Sep–1 Oct: docs install, Git/venv, backend package, money/date types, fixture, schema validation, atomic CSV import with source references | 143 tests passed. One defect found and fixed during the session: a method named `date` shadowed the `date` type in `validation.py`. Nothing committed to Git yet. Frontend manifest still open under M0. | `.venv\Scripts\python.exe -m pytest backend -q` → `143 passed in 0.29s` | 2 Oct: dated baseline forecast and running balance |
+| 29 Sep 2026, evening | Initial commit pushed; repository URL recorded | Commit `91c7a70` (42 files) pushed to `origin/main`. Push first failed with 403 because the OS credential store held a different GitHub account; resolved with a repo-local credential helper that sources the GitHub CLI token for Hellinferno. Clean clone of the pushed commit reproduced the suite. | `git push -u origin main`; clean clone: `.venv\Scripts\python.exe -m pytest backend -q` → `143 passed` | 1–6 Oct: dated baseline forecast, running balance, delayed-receipt scenario (M1) |

@@ -1,6 +1,6 @@
 # Verification plan
 
-Status: import, validation, money, and date tests run and pass as of 29 September 2026. Forecast, scenario, agent, UI, and clean-reproduction cases are not yet run. The following cases define required evidence.
+Status: import, validation, money, and date tests run and pass as of 29 September 2026, including a clean-clone reproduction of the pushed initial commit `91c7a70`. Forecast, scenario, agent, and UI cases are not yet run. The following cases define required evidence.
 
 ## Deterministic accounting cases
 
@@ -47,6 +47,7 @@ Use a fresh directory with documented prerequisites. Install from pinned manifes
 | Run date | Commit | Command/case | Mode | Result | Evidence location |
 | --- | --- | --- | --- | --- | --- |
 | 29 Sep 2026 | Uncommitted working tree | `.venv\Scripts\python.exe -m pytest backend -q` — money precision, date parsing, horizon bounds, schema validation, import and boundary tests, atomic commit, fixture load | Local, no model or AWS | 143 passed | `backend/tests` |
+| 29 Sep 2026 | `91c7a70` (pushed to origin/main) | Clean clone of the pushed commit; `.venv\Scripts\python.exe -m pytest backend -q` | Local, no model or AWS | 143 passed | <https://github.com/Hellinferno/Amazon-AI-builder-> |
 | — | — | Deterministic accounting cases that need the forecast or scenario engine | — | NOT RUN | — |
 
 Release gate: all critical money/date/import cases pass, real AWS evidence exists, README commands work, no unresolved data-leak/access defect, and demo results match the tested version.
