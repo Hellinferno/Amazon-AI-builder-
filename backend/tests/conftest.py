@@ -37,3 +37,26 @@ def obligations_csv() -> bytes:
 @pytest.fixture
 def empty_obligations() -> bytes:
     return csv_bytes(OBLIGATION_HEADER)
+
+
+def build_dataset(snapshot: dict, invoices=(), obligations=()):
+    """Import inline CSV rows and return the dataset, failing loudly on errors."""
+    from cashflow.importer import import_dataset
+
+    result = import_dataset(
+        snapshot, csv_bytes(INVOICE_HEADER, *invoices), csv_bytes(OBLIGATION_HEADER, *obligations)
+    )
+    assert result.ok, result.errors
+    return result.dataset
+
+
+@pytest.fixture
+def golden_dataset(snapshot, invoices_csv, obligations_csv):
+    from cashflow.importer import import_dataset
+
+    return import_dataset(snapshot, invoices_csv, obligations_csv).dataset
+
+
+@pytest.fixture
+def expected_results() -> dict:
+    return json.loads((FIXTURE_DIR / "expected_results.json").read_text(encoding="utf-8"))

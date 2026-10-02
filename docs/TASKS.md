@@ -20,11 +20,11 @@ Status date: 29 September 2026. Checkboxes represent evidence-backed completion 
 ## M1 — 6 October, 10 p.m.
 
 - [x] Money/date validation; CSV parsing and atomic import. Evidence: 143 tests pass, 29 Sep 2026.
-- [ ] Opening balance, dated forecast, negative-cash detection.
-- [ ] Overdue and partial-payment handling.
-- [ ] Delayed-payment scenario with immutable baseline.
-- [ ] Provenance IDs and warnings for missing assumptions. Done at import level: source file/row references and missing/past expected-date warnings. Open: provenance on forecast movements.
-- [ ] Required calculation and import tests pass.
+- [x] Opening balance, dated forecast, negative-cash detection. Evidence: `backend/src/cashflow/forecast.py`; `test_forecast.py` reproduces the golden daily table from `expected_results.json`, horizon boundaries, negative opening, first negative date, minimum/date, shortfall; 2 Oct 2026.
+- [x] Overdue and partial-payment handling. Evidence: `backend/src/cashflow/overdue.py`; `test_overdue.py` (due before as-of only, due today not overdue, remainder after partial settlement, overdue plus future expected date coexist); partial settlement in `test_forecast.py` and `test_scenario.py`; 2 Oct 2026.
+- [x] Delayed-payment scenario with immutable baseline. Evidence: `backend/src/cashflow/scenario.py`; `test_scenario.py` reproduces the INV-001 14-day golden result, zero-day identity, beyond-horizon retention, dataset immutability, stale-version rejection; 2 Oct 2026.
+- [x] Provenance IDs and warnings for missing assumptions. Evidence: every `Movement` and `UnresolvedItem` carries source file/row, dataset version, currency, and assumption origin (`baseline` or `scenario:<id>`); forecast-level warnings list excluded and beyond-horizon items; 2 Oct 2026.
+- [x] Required calculation and import tests pass. Evidence: `.venv\Scripts\python.exe -m pytest backend -q` → `215 passed`, 2 Oct 2026; see TEST_PLAN.md evidence register. Open for M1 gate (6 Oct): document engine usage in README, defect sweep.
 
 ## M2 — 12 October, 10 p.m.
 
@@ -71,3 +71,4 @@ Status date: 29 September 2026. Checkboxes represent evidence-backed completion 
 | --- | --- | --- | --- | --- |
 | 29 Sep 2026, 16:59–17:05 | Roadmap items 28 Sep–1 Oct: docs install, Git/venv, backend package, money/date types, fixture, schema validation, atomic CSV import with source references | 143 tests passed. One defect found and fixed during the session: a method named `date` shadowed the `date` type in `validation.py`. Nothing committed to Git yet. Frontend manifest still open under M0. | `.venv\Scripts\python.exe -m pytest backend -q` → `143 passed in 0.29s` | 2 Oct: dated baseline forecast and running balance |
 | 29 Sep 2026, evening | Initial commit pushed; repository URL recorded | Commit `91c7a70` (42 files) pushed to `origin/main`. Push first failed with 403 because the OS credential store held a different GitHub account; resolved with a repo-local credential helper that sources the GitHub CLI token for Hellinferno. Clean clone of the pushed commit reproduced the suite. | `git push -u origin main`; clean clone: `.venv\Scripts\python.exe -m pytest backend -q` → `143 passed` | 1–6 Oct: dated baseline forecast, running balance, delayed-receipt scenario (M1) |
+| 2 Oct 2026, afternoon | Roadmap items 2–5 Oct: dated baseline forecast and running balance; immutable delayed-receipt scenario; overdue report and missing-date warnings; boundary, partial-payment, duplicate-ID and invalid-import coverage | Three new modules (`forecast.py`, `scenario.py`, `overdue.py`) and three new test files; 72 new tests. Golden baseline and 14-day delay reproduce `expected_results.json` exactly. No defects found in the import layer; duplicate-ID and invalid-import rejection were already covered on 29 Sep and remain green. Engine decisions recorded in DECISIONS.md. Committed to `main` and pushed to origin on 2 Oct 2026 (see `git log`). | `.venv\Scripts\python.exe -m pytest backend -q` → `215 passed in 0.91s`; clean copy of `backend/` + `data/` in a fresh venv → `215 passed` | 6 Oct: M1 gate — README engine usage, defect sweep. 7 Oct: AWS/Bedrock access check |

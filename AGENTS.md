@@ -2,7 +2,7 @@
 
 ## Mission and current state
 
-Build the product specified in docs/PRD.md for the Alexa+ simulated-experience route plus AWS Builder. This repository currently contains documentation only. Follow user instructions and actual repository state; do not infer implemented features from plans.
+Build the product specified in docs/PRD.md for the Alexa+ simulated-experience route plus AWS Builder. As of 2 October 2026 the repository contains the documentation pack plus the pure Python accounting engine in `backend/` (import, forecast, scenario, overdue) with tests; no agent, UI, persistence, or AWS code exists. Follow user instructions and actual repository state; do not infer implemented features from plans.
 
 Read README.md, docs/DECISIONS.md, docs/ROADMAP.md, and docs/TASKS.md first. Before touching financial logic, read docs/ACCOUNTING_RULES.md, docs/DATA_MODEL.md, and docs/TEST_PLAN.md.
 

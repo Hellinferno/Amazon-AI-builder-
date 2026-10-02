@@ -52,4 +52,4 @@ As-of: 2026-10-05. Horizon: 2026-10-09. Opening cash: INR 50,000.00. All amounts
 Baseline closing: 50,000 + 40,000 + 15,000 − 10,000 − 70,000 = INR 25,000.
 Delayed INV-001 date: 2026-10-21. Scenario closing: INR -15,000. Difference from baseline: INR -40,000. First negative date: 9 October. Minimum additional cash to reach zero by that end-of-day: INR 15,000; no safety buffer is assumed.
 
-This is synthetic planning data, not an observed business outcome. These expected results are the test oracle; tests have not yet been implemented.
+This is synthetic planning data, not an observed business outcome. These expected results are the test oracle; `backend/tests/test_forecast.py` and `test_scenario.py` reproduce both columns from `data/synthetic/demo-v1/expected_results.json` as of 2 October 2026.

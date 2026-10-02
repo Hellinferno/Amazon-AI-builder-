@@ -35,7 +35,7 @@ Use an ordinary Python backend framework selected during scaffolding. Keep cloud
 - `submission/`: hackathon checklist and authored submission material.
 - `infra/`: optional reproducible deployment configuration.
 
-Only the Markdown files currently exist. Create code directories as needed.
+As of 2 October 2026, `backend/` (pure accounting module and tests) and `data/synthetic/` exist; `frontend/` and `infra/` do not. Create code directories as needed.
 
 ## Reliability decisions
 

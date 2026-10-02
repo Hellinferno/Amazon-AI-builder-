@@ -11,4 +11,4 @@
 
 All amounts are unsettled and every due date equals its expected date. The payee names and categories are additions needed to satisfy the CSV contract in [DATA_MODEL.md](../../../docs/DATA_MODEL.md); the golden table does not specify them.
 
-`expected_results.json` records the expected forecast values. The forecast engine that must reproduce them is not implemented yet.
+`expected_results.json` records the expected forecast values. Since 2 October 2026 the engine reproduces them: `backend/tests/test_forecast.py` and `test_scenario.py` compare the computed daily balances, closing cash, first negative date, difference, and shortfall against this file.

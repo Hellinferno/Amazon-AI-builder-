@@ -2,7 +2,7 @@
 
 A planned conversational cash-flow assistant for small-business owners, built for the Amazon Developer Hackathon 2026.
 
-**Status: early implementation, 29 September 2026.** The backend can validate and import the synthetic dataset. Cash-flow forecasting, scenarios, the agent, the web interface, and every AWS connection are not built yet. The working project name may change.
+**Status: accounting engine implemented, 2 October 2026.** The backend validates and imports the synthetic dataset, computes the dated baseline forecast, simulates a delayed receipt without touching the baseline, and reports overdue items, all with source-row provenance. The agent, the web interface, persistence, and every AWS connection are not built yet. The working project name may change.
 
 Repository: <https://github.com/Hellinferno/Amazon-AI-builder-> — initial commit `91c7a70` pushed to `main` on 29 September 2026.
 
@@ -46,7 +46,7 @@ Initial implementation: Python calculations, React interface, Amazon Bedrock wit
 
 ## Running the application
 
-There is no runnable application yet. The backend is a Python library with tests. These commands were run on Windows 11 with Python 3.12.10 on 29 September 2026, from the project root in PowerShell:
+There is no runnable application yet. The backend is a Python library with tests. These commands were run on Windows 11 with Python 3.12.10 on 2 October 2026, from the project root in PowerShell:
 
 ```powershell
 python -m venv .venv
@@ -55,13 +55,49 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pytest backend -q
 ```
 
-Expected result: `143 passed`. These commands also passed in a fresh copy of `backend/` and `data/` with a new virtual environment, and from a clean clone of commit `91c7a70` on 29 September 2026.
+Expected result: `215 passed`. These commands also passed on 2 October 2026 in a fresh copy of `backend/` and `data/` with a new virtual environment. The 29 September subset (143 tests) was reproduced from a clean clone of commit `91c7a70`.
 
 | Path | Contents |
 | --- | --- |
-| `backend/src/cashflow/` | Money and date types, schema validation, atomic CSV import |
-| `backend/tests/` | Automated tests |
+| `backend/src/cashflow/money.py`, `dates.py`, `models.py` | Integer-paise money, strict ISO dates, frozen domain records |
+| `backend/src/cashflow/validation.py`, `importer.py` | Schema validation, atomic CSV import, in-memory dataset store |
+| `backend/src/cashflow/forecast.py` | Dated baseline forecast: daily balances, minimum, first negative date, shortfall, provenance |
+| `backend/src/cashflow/scenario.py` | Delayed-receipt scenario bound to a dataset version; baseline stays immutable |
+| `backend/src/cashflow/overdue.py` | Overdue invoices and obligations as of the snapshot date |
+| `backend/tests/` | Automated tests, including the golden fixture oracle |
 | `data/synthetic/demo-v1/` | Synthetic golden fixture and its expected results |
+
+Engine usage from Python, with the fixture loaded (this is the library API; the HTTP and agent layers are not built yet):
+
+```python
+from datetime import date
+from pathlib import Path
+import json
+
+from cashflow.importer import import_dataset
+from cashflow.forecast import compute_forecast
+from cashflow.scenario import define_scenario, apply_scenario
+from cashflow.overdue import overdue_report
+
+fixture = Path("data/synthetic/demo-v1")
+snapshot = json.loads((fixture / "snapshot.json").read_text(encoding="utf-8"))
+result = import_dataset(
+    snapshot, (fixture / "invoices.csv").read_bytes(), (fixture / "obligations.csv").read_bytes()
+)
+assert result.ok, result.errors
+dataset = result.dataset
+
+baseline = compute_forecast(dataset, date(2026, 10, 9))
+print(baseline.as_dict()["daily_closing"])   # {'2026-10-05': '50000.00', ..., '2026-10-09': '25000.00'}
+
+scenario = define_scenario(
+    dataset, "INV-001", 14, scenario_id="demo-delay", created_at="2026-10-05T09:00:00Z"
+)
+delayed = apply_scenario(dataset, scenario, date(2026, 10, 9))
+print(delayed.as_dict()["closing_cash"], delayed.as_dict()["first_negative_date"])  # -15000.00 2026-10-09
+
+print(overdue_report(dataset).as_dict()["invoices"])  # [] for the golden fixture
+```
 
 Do not treat the proposed API names in the docs as implemented.
 
