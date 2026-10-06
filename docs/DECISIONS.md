@@ -69,7 +69,7 @@ These resolve details the accounting contract left open. Each is enforced by tes
 
 ## Open decisions
 
-- Final project name and GitHub URL.
+- Final project name and GitHub URL. The recorded repository was found archived (read-only) on 6 October 2026; pushes fail until the owner unarchives it or a new remote is chosen.
 - Actual AWS plan, remaining credits, expiry, region, model ID and quotas.
 - Backend HTTP framework, deployment and reviewer access path.
 - Public licensed repository versus private reviewer access.
