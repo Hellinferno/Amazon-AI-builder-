@@ -4,13 +4,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cashflow"
-version = "0.1.0"
-description = "Deterministic cash-flow accounting engine for the Cashflow Assistant"
+version = "0.2.0"
+description = "Deterministic cash-flow accounting engine and assistant backend for the Cashflow Assistant"
 requires-python = ">=3.12"
+# The accounting engine (package ``cashflow``) has no runtime dependencies.
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+# HTTP backend and tool/agent layer (package ``cashflow_app``).
+app = ["fastapi>=0.115", "uvicorn>=0.30", "python-multipart>=0.0.9"]
+# Live Bedrock provider. Not required for mock mode.
+aws = ["boto3>=1.35"]
+dev = ["pytest>=8", "httpx>=0.27"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

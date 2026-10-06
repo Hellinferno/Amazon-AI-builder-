@@ -37,7 +37,7 @@ Do not execute formulas or instructions embedded in cells. If exporting CSV late
 
 ## Persistence
 
-Start with a local adapter for synthetic data. DynamoDB is the intended cloud adapter if integration time permits. Enforce business/dataset scoping in the backend and use opaque generated identifiers for stored scenarios. Raw S3 uploads remain private. Record the implemented key schema and retention behavior here when selected.
+Implemented 6 October 2026: saved scenarios live in `data/local/scenarios.json` (git-ignored), format `cashflow-scenarios/1`, one object per scenario with `scenario_id` (opaque `scn_` plus 12 URL-safe characters), `business_id`, `dataset_version`, `invoice_id`, `delay_days`, `name`, `created_at`. Every write replaces the file atomically. Reads are scoped by business; a scenario whose `dataset_version` differs from the current dataset is flagged stale and is never silently recomputed. Datasets and conversation sessions are in memory and reset on restart; the synthetic fixture reloads on start. DynamoDB is the intended cloud adapter if integration time permits; uploads are validated in memory and not stored. Retention: a saved scenario persists until deleted or until a demo reset clears the business's scenarios.
 
 ## Change control
 

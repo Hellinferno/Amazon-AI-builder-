@@ -1,6 +1,6 @@
 # Security and data handling
 
-Status: planned controls; verification belongs in TEST_PLAN.md.
+Status: controls implemented locally on 6 October 2026 where noted below; verification belongs in TEST_PLAN.md. Implemented: business context from configuration only (imports for another `business_id` return 403); tool allowlist with argument validation; record text treated as data (injection test in `backend/tests/app/test_mock_conversation.py`); no send/transfer/filing capability; explicit-only scenario saves; localhost bind by default; CORS limited to the Vite dev origin; `.env` and `data/local/` git-ignored; `.env.example` holds names only.
 
 ## Data scope
 

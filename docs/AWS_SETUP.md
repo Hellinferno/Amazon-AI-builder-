@@ -35,7 +35,7 @@ Introduce private S3 source storage and DynamoDB scenario persistence only when 
 | S3_BUCKET_NAME | Private source bucket, when implemented |
 | DYNAMODB_TABLE_NAME | Scenario/data table, when implemented |
 
-These are proposed configuration names. Supply a matching `.env.example` only when the application actually reads them. Secret values never belong in `.env.example`.
+The backend reads these names (plus `BUSINESS_ID`, `DEFAULT_HORIZON_DAYS`, `MAX_TOOL_CALLS`, `MODEL_TIMEOUT_SECONDS`, `MAX_OUTPUT_TOKENS`, `DEMO_RESET_ENABLED`, `BIND_HOST`, `BIND_PORT`) in `cashflow_app/config.py`; `.env.example` at the project root lists them with no secret values. `APP_MODE=live` refuses to start without `AWS_REGION` and `BEDROCK_MODEL_ID`. `S3_BUCKET_NAME` and `DYNAMODB_TABLE_NAME` are not read yet because those adapters do not exist.
 
 ## Development spending controls
 

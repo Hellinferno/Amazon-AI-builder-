@@ -1,8 +1,45 @@
-# Versions that passed the test run on 29 Sep 2026 (Python 3.12.10, Windows 11).
-# The engine itself has no runtime dependencies.
+# Versions that passed the test run on 6 Oct 2026 (Python 3.12.10, Windows 11).
+# The accounting engine (cashflow) has no runtime dependencies; the app layer
+# (cashflow_app) needs the FastAPI group; boto3 is only used in live mode.
+
+# tests
 colorama==0.4.6
 iniconfig==2.3.0
 packaging==26.3
 pluggy==1.6.0
 Pygments==2.21.0
 pytest==9.1.1
+
+# HTTP backend (cashflow[app])
+fastapi==0.142.2
+opentelemetry-api==1.45.0
+starlette==1.7.0
+pydantic==2.13.5
+pydantic_core==2.46.5
+annotated-types==0.8.0
+annotated-doc==0.0.5
+typing_extensions==4.16.0
+typing-inspection==0.4.4
+anyio==4.15.1
+idna==3.20
+uvicorn==0.54.0
+click==8.5.0
+h11==0.16.0
+python-multipart==0.0.32
+
+# API tests (Starlette 1.7 test client prefers httpx2; httpx 0.28 still works
+# but raises a StarletteDeprecationWarning without httpx2 present)
+httpx2==2.13.1
+httpcore2==2.13.1
+httpx==0.28.1
+httpcore==1.0.9
+certifi==2026.7.22
+
+# Live Bedrock provider (cashflow[aws]); unused in mock mode
+boto3==1.43.108
+botocore==1.43.108
+jmespath==1.1.0
+python-dateutil==2.9.0.post0
+six==1.17.0
+s3transfer==0.19.2
+urllib3==2.8.0

@@ -17,7 +17,8 @@ Updated 6 October 2026. Separate user-confirmed facts from proposed engineering 
 | Decision | Rationale | Revisit when |
 | --- | --- | --- |
 | Alexa+ simulated experience + AWS Builder | Fits the product and accessible tooling | Rules or scope change |
-| Existing Bedrock model | Concentrate time on reliable workflow | Model access/cost prevents use |
+| Existing Bedrock model via the Converse API (boto3); Strands deferred | One bounded tool loop serves both the offline mock and the live provider; Strands' custom-model interface is a streaming event protocol that would have doubled the mock's complexity (evaluated 6 Oct 2026, strands-agents 1.58.0) | A live call works and the judges' value of Strands outweighs the second loop |
+| FastAPI backend; Vite + React + TypeScript frontend | Typed request models, test client without a server, one-origin dev proxy | Setup constraints emerge |
 | Deterministic Python money logic | Inspectable numerical outputs | Never delegate core arithmetic to prose generation |
 | INR-only synthetic demo | Limits data/currency complexity | After MVP |
 | React frontend | Interactive evidence and scenario display | Setup constraints emerge |
@@ -67,11 +68,30 @@ These resolve details the accounting contract left open. Each is enforced by tes
 | Overdue | `open`, remaining > 0, and due date strictly before as-of. Due on the as-of date is not overdue. Both invoices and obligations are reported, oldest due date first; overdue items may still carry a future expected date and appear in the forecast. |
 | Serialization | `as_dict()` on forecasts, scenarios, and overdue reports returns JSON-ready data with money as two-decimal strings and dates as ISO strings, matching the response conventions in TOOLS_AND_API.md. |
 
+## Application decisions implemented 6 October 2026
+
+Enforced by `backend/tests/app/` and `frontend/src/test/`.
+
+| Decision | Detail |
+| --- | --- |
+| Trusted context | `ToolContext` (dataset, default horizon, `created_at`, business name) is built by the backend; tools never read the clock and a model can never choose the business or dataset. Imports for another `business_id` are refused (403). |
+| Tool allowlist | Six tools; `list_open_invoices` was added so names are resolved through a tool. Unknown tool names return `unknown_tool` and are reported back to the model, never executed. Unknown arguments are rejected. |
+| Grounding check | Every two-decimal money token in the final text must occur in a tool result (separators ignored; money-looking text inside record fields counts as tool output). Failure replaces the text with the template composer's output and sets `grounded: false`. |
+| Mock mode | A rule-based planner plus the same template composer. Visible in `/api/state`, the chat response (`mode`), the UI badge, and a footer on every answer. Never described as a model. |
+| Loop limits | `MAX_TOOL_CALLS` (default 6) per question; provider timeout and output tokens from config; tool results are preserved on provider failure with a template summary. |
+| Sessions | In-memory; bound to a dataset version. A dataset change drops the scenario context and history with a warning. A successful simulation becomes the active scenario for follow-ups; an explicit `horizon_end` from a tool call becomes the session horizon. |
+| Relative dates | Weekday names resolve to the first such day on or after the as-of date and the answer states the date used; "payroll" without a date uses the next payroll obligation's expected date. |
+| Saved scenarios | Only via `POST /api/scenarios`; opaque `scn_…` IDs; bound to business and dataset version; stale ones are kept, flagged, and must be recomputed explicitly (a new saved record). Local store is one JSON file written atomically; DynamoDB not implemented. |
+| Reminder draft | Template-only, grounded on the invoice record; `sent: false`, `status: draft_not_sent`; the UI labels it "not sent" and offers copy-to-clipboard only. |
+| Money display | `INR 40,000.00` (Western grouping) in prose and UI; digits never change. |
+| Demo reset | Reloads the fixture and clears sessions and saved scenarios; disabled with `DEMO_RESET_ENABLED=false`. |
+| Frontend tests | Vitest with the `vmThreads` pool and 30 s per-test timeout (see FRICTION_LOG FL-001). Chart colours are the validated reference palette slots 1 and 2 in both colour schemes; the table is the text alternative. |
+
 ## Open decisions
 
 - Final project name and GitHub URL. The repository was briefly archived (read-only) on 6 October 2026; the user unarchived it the same day and pushes work again.
 - Actual AWS plan, remaining credits, expiry, region, model ID and quotas.
-- Backend HTTP framework, deployment and reviewer access path.
+- Deployment and reviewer access path (backend framework settled: FastAPI).
 - Public licensed repository versus private reviewer access.
 - Available daily work hours and whether team members will join.
 
@@ -83,5 +103,6 @@ These resolve details the accounting contract left open. Each is enforced by tes
 | 29 Sep 2026 | Backend package, synthetic fixture, schema validation, atomic CSV import | Roadmap items through 1 Oct | 143 tests pass; forecast engine not started |
 | 2 Oct 2026 | Dated baseline forecast, delayed-receipt scenario, overdue report, boundary tests | Roadmap items 2–5 Oct | 215 tests pass; golden table reproduced; agent, UI, and AWS not started |
 | 6 Oct 2026 | M1 gate: defect sweep (horizon type check, `created_at` validation), README usage verified | Roadmap item 6 Oct | 232 tests pass; M1 complete; agent, UI, and AWS not started |
+| 6 Oct 2026 | Tool layer, bounded conversation loop (mock + Bedrock providers), FastAPI backend, local persistence, React frontend; Strands deferred | User asked to complete everything that needs no credentials (roadmap items 8–16 Oct) | 339 backend tests, 5 frontend tests, mock-mode browser rehearsal; live Bedrock call still pending credentials |
 
 Do not import unrelated competition submission artifacts or the separate model-training project into this repository.
