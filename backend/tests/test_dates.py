@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, timezone
 
 import pytest
 
@@ -54,3 +54,12 @@ def test_horizon_cap_is_inclusive():
     assert (date(2027, 1, 3) - AS_OF).days == MAX_HORIZON_DAYS
     with pytest.raises(DateError, match="90"):
         validate_horizon(AS_OF, date(2027, 1, 4))
+
+
+@pytest.mark.parametrize(
+    "value", ["2027-01-03", None, 20270103, datetime(2027, 1, 3), datetime(2027, 1, 3, tzinfo=timezone.utc)]
+)
+def test_horizon_must_be_a_plain_date(value):
+    """Strings, datetimes, and other types raise DateError, not a bare TypeError."""
+    with pytest.raises(DateError, match="calendar date"):
+        validate_horizon(AS_OF, value)

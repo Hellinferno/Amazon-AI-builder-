@@ -2,7 +2,7 @@
 
 A planned conversational cash-flow assistant for small-business owners, built for the Amazon Developer Hackathon 2026.
 
-**Status: accounting engine implemented, 2 October 2026.** The backend validates and imports the synthetic dataset, computes the dated baseline forecast, simulates a delayed receipt without touching the baseline, and reports overdue items, all with source-row provenance. The agent, the web interface, persistence, and every AWS connection are not built yet. The working project name may change.
+**Status: accounting engine complete (milestone M1 passed), 6 October 2026.** The backend validates and imports the synthetic dataset, computes the dated baseline forecast, simulates a delayed receipt without touching the baseline, and reports overdue items, all with source-row provenance. The agent, the web interface, persistence, and every AWS connection are not built yet. The working project name may change.
 
 Repository: <https://github.com/Hellinferno/Amazon-AI-builder-> — initial commit `91c7a70` pushed to `main` on 29 September 2026.
 
@@ -46,7 +46,7 @@ Initial implementation: Python calculations, React interface, Amazon Bedrock wit
 
 ## Running the application
 
-There is no runnable application yet. The backend is a Python library with tests. These commands were run on Windows 11 with Python 3.12.10 on 2 October 2026, from the project root in PowerShell:
+There is no runnable application yet. The backend is a Python library with tests. These commands were run on Windows 11 with Python 3.12.10 on 6 October 2026, from the project root in PowerShell:
 
 ```powershell
 python -m venv .venv
@@ -55,7 +55,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pytest backend -q
 ```
 
-Expected result: `215 passed`. These commands also passed on 2 October 2026 in a fresh copy of `backend/` and `data/` with a new virtual environment. The 29 September subset (143 tests) was reproduced from a clean clone of commit `91c7a70`.
+Expected result: `232 passed`. These commands also passed on 6 October 2026 in a fresh copy of `backend/` and `data/` with a new virtual environment. The 29 September subset (143 tests) was reproduced from a clean clone of commit `91c7a70`.
 
 | Path | Contents |
 | --- | --- |
@@ -67,7 +67,7 @@ Expected result: `215 passed`. These commands also passed on 2 October 2026 in a
 | `backend/tests/` | Automated tests, including the golden fixture oracle |
 | `data/synthetic/demo-v1/` | Synthetic golden fixture and its expected results |
 
-Engine usage from Python, with the fixture loaded (this is the library API; the HTTP and agent layers are not built yet):
+Engine usage from Python, with the fixture loaded (this is the library API; the HTTP and agent layers are not built yet). Dates are passed as `datetime.date` values; parse text dates with `cashflow.dates.parse_date`. `created_at` must be an ISO 8601 UTC timestamp. The snippet below was run verbatim on 6 October 2026 and printed the values in the comments:
 
 ```python
 from datetime import date

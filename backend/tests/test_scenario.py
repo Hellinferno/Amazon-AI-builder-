@@ -309,11 +309,42 @@ def test_invalid_scenario_id(golden_dataset, scenario_id):
     )
 
 
+@pytest.mark.parametrize(
+    "created_at",
+    [
+        None,
+        123,
+        "",
+        "yesterday",
+        "2026-10-05",  # date only, no time or offset
+        "2026-10-05T09:00:00",  # naive: no UTC offset
+        "2026-10-05T09:00:00+05:30",  # explicit but not UTC
+        "2026-13-05T09:00:00Z",  # not a real calendar date
+    ],
+)
+def test_invalid_created_at(golden_dataset, created_at):
+    with pytest.raises(ScenarioError) as info:
+        define_scenario(golden_dataset, "INV-001", 14, scenario_id="scn-1", created_at=created_at)
+    assert info.value.code == "invalid_created_at"
+
+
+@pytest.mark.parametrize(
+    "created_at", ["2026-10-05T09:00:00Z", "2026-10-05T09:00:00+00:00", "2026-10-05T09:00:00.250Z"]
+)
+def test_created_at_accepts_utc_timestamps_verbatim(golden_dataset, created_at):
+    scenario = define_scenario(
+        golden_dataset, "INV-001", 14, scenario_id="scn-1", created_at=created_at
+    )
+    assert scenario.created_at == created_at
+
+
 def test_apply_revalidates_a_hand_built_scenario(golden_dataset):
     forged = Scenario("scn-x", "demo-v1", "INV-001", -5, CREATED_AT)
     assert error_code(apply_scenario, golden_dataset, forged, HORIZON) == "invalid_delay"
     missing = Scenario("scn-y", "demo-v1", "INV-404", 5, CREATED_AT)
     assert error_code(apply_scenario, golden_dataset, missing, HORIZON) == "unknown_invoice"
+    undated = Scenario("scn-z", "demo-v1", "INV-001", 5, "yesterday")
+    assert error_code(apply_scenario, golden_dataset, undated, HORIZON) == "invalid_created_at"
 
 
 def test_invalid_horizon_propagates(golden_dataset):
@@ -322,3 +353,5 @@ def test_invalid_horizon_propagates(golden_dataset):
         apply_scenario(golden_dataset, scenario, AS_OF - timedelta(days=1))
     with pytest.raises(DateError):
         apply_scenario(golden_dataset, scenario, AS_OF + timedelta(days=91))
+    with pytest.raises(DateError):
+        apply_scenario(golden_dataset, scenario, "2026-10-09")

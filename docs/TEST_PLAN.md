@@ -1,6 +1,6 @@
 # Verification plan
 
-Status: import, validation, money, date, forecast, scenario, and overdue tests run and pass as of 2 October 2026 (215 tests). The 29 September subset was also reproduced from a clean clone of the pushed initial commit `91c7a70`. Agent and UI cases are not yet run. The following cases define required evidence.
+Status: import, validation, money, date, forecast, scenario, and overdue tests run and pass as of 6 October 2026 (232 tests; the M1 defect sweep added 17). The 29 September subset was also reproduced from a clean clone of the pushed initial commit `91c7a70`. Agent and UI cases are not yet run. The following cases define required evidence.
 
 ## Deterministic accounting cases
 
@@ -50,6 +50,8 @@ Use a fresh directory with documented prerequisites. Install from pinned manifes
 | 29 Sep 2026 | `91c7a70` (pushed to origin/main) | Clean clone of the pushed commit; `.venv\Scripts\python.exe -m pytest backend -q` | Local, no model or AWS | 143 passed | <https://github.com/Hellinferno/Amazon-AI-builder-> |
 | 2 Oct 2026 | Uncommitted working tree on top of `b60b40b` | `.venv\Scripts\python.exe -m pytest backend -q` — all deterministic accounting cases above: golden baseline, INV-001 delayed 14 days, zero-day delay, receipt outside horizon, horizon boundary, partial settlement, settled amounts not double-counted, missing/past expected date, overdue status, settled/cancelled, no movements, negative opening, immutable scenario, changed dataset, money precision, conservation, order independence; plus the 29 Sep import and boundary tests | Local, no model or AWS | 215 passed in 0.91s | `backend/tests/test_forecast.py`, `test_scenario.py`, `test_overdue.py` |
 | 2 Oct 2026 | Same working tree | Clean copy of `backend/` and `data/` into `D:\tmp\cashflow-clean`; new venv; `pip install -r backend\requirements-dev.txt`; `pip install -e backend`; `pytest backend -q` | Local, no model or AWS | 215 passed in 0.91s (Python 3.12.10) | `D:\tmp\cashflow-clean` (not tracked) |
+| 6 Oct 2026 | Uncommitted working tree on top of `a4e52e6` | M1 defect sweep: non-`date` horizon rejected with `DateError` (string, `datetime`, `None`, int); `created_at` must be an ISO 8601 UTC timestamp (`invalid_created_at`), revalidated on apply; README engine-usage snippet re-run verbatim | Local, no model or AWS | 232 passed in 0.74s | `backend/tests/test_dates.py`, `test_forecast.py`, `test_scenario.py` |
+| 6 Oct 2026 | Same working tree | Clean copy of `backend/` and `data/` into `D:\tmp\cashflow-clean-06oct`; new venv; `pip install -r backend\requirements-dev.txt`; `pip install -e backend`; `pytest backend -q` | Local, no model or AWS | 232 passed in 0.85s (Python 3.12.10) | `D:\tmp\cashflow-clean-06oct` (not tracked) |
 | — | — | Agent evaluation, UI, persistence, live AWS cases | — | NOT RUN | — |
 
 Release gate: all critical money/date/import cases pass, real AWS evidence exists, README commands work, no unresolved data-leak/access defect, and demo results match the tested version.

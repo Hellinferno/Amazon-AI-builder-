@@ -29,8 +29,14 @@ def parse_date(value: object) -> date:
         raise DateError("date is not a real calendar date") from None
 
 
-def validate_horizon(as_of_date: date, horizon_end: date) -> None:
-    """Check the inclusive forecast interval ``[as_of_date, horizon_end]``."""
+def validate_horizon(as_of_date: date, horizon_end: object) -> None:
+    """Check the inclusive forecast interval ``[as_of_date, horizon_end]``.
+
+    ``horizon_end`` must be a plain ``date``; strings, ``datetime`` values, and
+    other types raise ``DateError`` rather than a bare ``TypeError``.
+    """
+    if type(horizon_end) is not date:
+        raise DateError("horizon end must be a calendar date (datetime.date)")
     if horizon_end < as_of_date:
         raise DateError("horizon end must not precede the as-of date")
     if (horizon_end - as_of_date).days > MAX_HORIZON_DAYS:

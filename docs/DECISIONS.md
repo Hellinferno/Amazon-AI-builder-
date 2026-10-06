@@ -1,6 +1,6 @@
 # Decisions and project state
 
-Updated 29 September 2026. Separate user-confirmed facts from proposed engineering choices.
+Updated 6 October 2026. Separate user-confirmed facts from proposed engineering choices.
 
 ## Confirmed context
 
@@ -62,7 +62,8 @@ These resolve details the accounting contract left open. Each is enforced by tes
 | Scenario validation | The invoice must exist, be `open` with remaining > 0, and have an expected receipt date on/after as-of. `delay_days` is an integer 0–365. `scenario_id` is 1–64 printable characters. Errors carry a stable `code` (`unknown_invoice`, `invoice_not_open`, `no_base_date`, `base_date_before_as_of`, `invalid_delay`, `invalid_scenario_id`, `stale_dataset`). |
 | Scenario immutability | A scenario works on a fresh tuple of movements; the dataset's frozen records are never modified. The result includes both the baseline and the scenario forecast over the same horizon. |
 | Version binding | `Scenario.dataset_version` is set from the dataset at definition time. Applying it to a different version raises `StaleScenarioError`; the caller must define a new scenario on the new version. |
-| `created_at` | Supplied by the caller as an ISO 8601 UTC string. The engine never reads the clock. |
+| `created_at` | Supplied by the caller as an ISO 8601 timestamp with an explicit UTC offset (`Z` or `+00:00`), stored verbatim. Anything else, including naive timestamps and non-UTC offsets, is rejected with code `invalid_created_at` (added 6 Oct). The engine never reads the clock. |
+| Horizon type | `horizon_end` must be a plain `datetime.date`. Strings, `datetime` values, and other types raise `DateError` (added 6 Oct); parsing text dates is the caller's job via `parse_date`. |
 | Overdue | `open`, remaining > 0, and due date strictly before as-of. Due on the as-of date is not overdue. Both invoices and obligations are reported, oldest due date first; overdue items may still carry a future expected date and appear in the forecast. |
 | Serialization | `as_dict()` on forecasts, scenarios, and overdue reports returns JSON-ready data with money as two-decimal strings and dates as ISO strings, matching the response conventions in TOOLS_AND_API.md. |
 
@@ -81,5 +82,6 @@ These resolve details the accounting contract left open. Each is enforced by tes
 | 28 Sep 2026 | Documentation baseline created | User requested Markdown pack and deadlines | Design only; no app code |
 | 29 Sep 2026 | Backend package, synthetic fixture, schema validation, atomic CSV import | Roadmap items through 1 Oct | 143 tests pass; forecast engine not started |
 | 2 Oct 2026 | Dated baseline forecast, delayed-receipt scenario, overdue report, boundary tests | Roadmap items 2–5 Oct | 215 tests pass; golden table reproduced; agent, UI, and AWS not started |
+| 6 Oct 2026 | M1 gate: defect sweep (horizon type check, `created_at` validation), README usage verified | Roadmap item 6 Oct | 232 tests pass; M1 complete; agent, UI, and AWS not started |
 
 Do not import unrelated competition submission artifacts or the separate model-training project into this repository.

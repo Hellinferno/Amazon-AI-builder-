@@ -161,6 +161,11 @@ def test_horizon_before_as_of_is_rejected(golden_dataset):
         compute_forecast(golden_dataset, AS_OF - timedelta(days=1))
 
 
+def test_horizon_given_as_a_string_is_rejected_with_date_error(golden_dataset):
+    with pytest.raises(DateError):
+        compute_forecast(golden_dataset, "2026-10-09")
+
+
 def test_horizon_cap_is_90_days(golden_dataset):
     assert MAX_HORIZON_DAYS == 90
     at_cap = compute_forecast(golden_dataset, AS_OF + timedelta(days=90))

@@ -9,7 +9,7 @@ recomputing against changed records.
 """
 
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from .forecast import (
     DIRECTION_INFLOW,
@@ -49,8 +49,8 @@ class StaleScenarioError(ScenarioError):
 class Scenario:
     """Saved scenario definition. Field names follow docs/DATA_MODEL.md.
 
-    ``created_at`` is an ISO 8601 UTC timestamp supplied by the caller; the
-    engine never reads the clock.
+    ``created_at`` is an ISO 8601 UTC timestamp supplied by the caller and
+    validated by ``define_scenario``; the engine never reads the clock.
     """
 
     scenario_id: str
@@ -137,6 +137,21 @@ def _validate_delay_days(delay_days: object) -> int:
     return delay_days
 
 
+def _validate_created_at(created_at: object) -> str:
+    """Require an ISO 8601 timestamp with an explicit UTC offset, e.g. 2026-10-05T09:00:00Z."""
+    if isinstance(created_at, str):
+        try:
+            parsed = datetime.fromisoformat(created_at)
+        except ValueError:
+            parsed = None
+        if parsed is not None and parsed.utcoffset() == timedelta(0):
+            return created_at
+    raise ScenarioError(
+        "invalid_created_at",
+        "created_at must be an ISO 8601 UTC timestamp such as 2026-10-05T09:00:00Z",
+    )
+
+
 def _validate_scenario_id(scenario_id: object) -> str:
     if (
         not isinstance(scenario_id, str)
@@ -203,7 +218,7 @@ def define_scenario(
         dataset_version=dataset.snapshot.dataset_version,
         invoice_id=invoice.invoice_id,
         delay_days=_validate_delay_days(delay_days),
-        created_at=created_at,
+        created_at=_validate_created_at(created_at),
     )
 
 
@@ -217,6 +232,7 @@ def apply_scenario(dataset: Dataset, scenario: Scenario, horizon_end: date) -> S
     if scenario.dataset_version != dataset.snapshot.dataset_version:
         raise StaleScenarioError(scenario.dataset_version, dataset.snapshot.dataset_version)
     _validate_scenario_id(scenario.scenario_id)
+    _validate_created_at(scenario.created_at)
     delay_days = _validate_delay_days(scenario.delay_days)
     invoice = _find_invoice(dataset, scenario.invoice_id)
     original_date = _shiftable_date(dataset, invoice)
