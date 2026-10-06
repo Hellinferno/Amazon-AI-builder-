@@ -104,7 +104,7 @@ Do not treat the proposed API names in the docs as implemented.
 ## Release facts to fill in
 
 - GitHub URL: https://github.com/Hellinferno/Amazon-AI-builder-
-- Tested release commit: `91c7a70` (initial commit, 29 September 2026)
+- Latest commit reproduced from a fresh clone: `ab77505` (6 October 2026, 232 tests); release commit TBD
 - Model ID, region, and dependency versions: TBD
 - Demo video URL: TBD
 - License choice and LICENSE file: TBD
